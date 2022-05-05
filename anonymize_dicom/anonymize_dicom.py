@@ -232,12 +232,12 @@ def anonymize_dicom():
     listbox = Listbox(root, name='dnd_demo_listbox',
                         selectmode='extended', width=1, height=1)
     listbox.grid(row=1, column=0, padx=5, pady=5, sticky='news')
-    listbox.insert(END, '')
+    # listbox.insert(END, '')
 
     outbox = Listbox(root, name='dnd_demo_outbox',
                         selectmode='extended', width=1, height=1)
     outbox.grid(row=3, rowspan=2, column=0, padx=5, pady=5, sticky='news')
-    outbox.insert(END, '')
+    # outbox.insert(END, '')
 
     before_header_box = Listbox(
             root, name='dnd_demo_before',
@@ -318,8 +318,40 @@ def anonymize_dicom():
                 print('Error: reported event.widget not known')
         return event.action
 
+    def drop_out(event):
+        if event.data:
+            print('Dropped data:\n', event.data)
+            #print_event_info(event)
+            if event.widget == outbox:
+                # event.data is a list of filenames as one string;
+                # if one of these filenames contains whitespace characters
+                # it is rather difficult to reliably tell where one filename
+                # ends and the next begins; the best bet appears to be
+                # to count on tkdnd's and tkinter's internal magic to handle
+                # such cases correctly; the following seems to work well
+                # at least with Windows and Gtk/X11
+                files = outbox.tk.splitlist(event.data)
+                for f in files:
+                    if os.path.exists(f):
+                        print('Dropped file: "%s"' % f)
+                        outbox.insert('end', f)
+                    else:
+                        print('Not dropping file "%s": file does not exist.' % f)
+
+            elif event.widget == text:
+                # calculate the mouse pointer's text index
+                bd = text['bd'] + text['highlightthickness']
+                x = event.x_root - text.winfo_rootx() - bd
+                y = event.y_root - text.winfo_rooty() - bd
+                index = text.index('@%d,%d' % (x,y))
+                text.insert(index, event.data)
+            else:
+                print('Error: reported event.widget not known')
+        return event.action
+
     # now make the Listbox and Text drop targets
     listbox.drop_target_register(DND_FILES, DND_TEXT)
+    outbox.drop_target_register(DND_FILES, DND_TEXT)
     text.drop_target_register(DND_TEXT)
 
     for widget in (listbox, text):
@@ -330,6 +362,11 @@ def anonymize_dicom():
         #widget.dnd_bind('<<Drop:DND_Files>>', drop)
         #widget.dnd_bind('<<Drop:DND_Text>>', drop)
 
+    for widget in (outbox, text):
+        widget.dnd_bind('<<DropEnter>>', drop_enter)
+        widget.dnd_bind('<<DropPosition>>', drop_position)
+        widget.dnd_bind('<<DropLeave>>', drop_leave)
+        widget.dnd_bind('<<Drop>>', drop_out)
     # define drag callbacks
 
     def drag_init_listbox(event):
@@ -339,6 +376,18 @@ def anonymize_dicom():
         data = ()
         if listbox.curselection():
             data = tuple([listbox.get(i) for i in listbox.curselection()])
+            print('Dragging :', data)
+        # tuples can also be used to specify possible alternatives for
+        # action type and DnD type:
+        return ((ASK, COPY), (DND_FILES, DND_TEXT), data)
+
+    def drag_init_outbox(event):
+        print_event_info(event)
+        # use a tuple as file list, this should hopefully be handled gracefully
+        # by tkdnd and the drop targets like file managers or text editors
+        data = ()
+        if outbox.curselection():
+            data = tuple([outbox.get(i) for i in outbox.curselection()])
             print('Dragging :', data)
         # tuples can also be used to specify possible alternatives for
         # action type and DnD type:
@@ -369,6 +418,18 @@ def anonymize_dicom():
     listbox.dnd_bind('<<DragInitCmd>>', drag_init_listbox)
     listbox.dnd_bind('<<DragEndCmd>>', drag_end)
     text.dnd_bind('<<DragInitCmd>>', drag_init_text)
+
+
+
+    # outbox
+    # finally make the widgets a drag source
+    outbox.drag_source_register(1, DND_TEXT, DND_FILES)
+    text.drag_source_register(3, DND_TEXT)
+
+    outbox.dnd_bind('<<DragInitCmd>>', drag_init_outbox)
+    outbox.dnd_bind('<<DragEndCmd>>', drag_end)
+    text.dnd_bind('<<DragInitCmd>>', drag_init_text)
+
     # skip the useless drag_end() binding for the text widget
 
     root.update_idletasks()

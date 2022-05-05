@@ -41,9 +41,9 @@ RUN apt-get update -qq \
     && sync && conda clean --all --yes && sync \
     && rm -rf ~/.cache/pip/*
 
-COPY . /opt/ampscz_anonymize_mri
-ENV PYTHONPATH="/opt/ampscz_anonymize_mri/ampscz_anonymize_mri:$PYTHONPATH"
-ENV PATH="/opt/ampscz_anonymize_mri/scripts:$PATH"
-RUN pip install -r /opt/ampscz_anonymize_mri/requirements.txt
+#COPY . /opt/ampscz_anonymize_mri
+#ENV PYTHONPATH="/opt/ampscz_anonymize_mri/ampscz_anonymize_mri:$PYTHONPATH"
+#ENV PATH="/opt/ampscz_anonymize_mri/scripts:$PATH"
+RUN pip install ampscz-anonymize-dicom==0.0.3
 
 
