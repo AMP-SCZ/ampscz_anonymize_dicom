@@ -5,8 +5,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="ampscz_anonymize_dicom", # Replace with your own username
-    version="0.0.1",
+    name="ampscz_anonymize_dicom",
+    version="0.0.3",
     author="Kevin Cho",
     author_email="kevincho@bwh.harvard.edu",
     description="AMP-SCZ Dicom anonymizer",
