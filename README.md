@@ -21,6 +21,7 @@ How to run AMP-SCZ Dicom Anonymizer
 
 ## Installation
 
+Installation through `pypi`
 
 ```
 $ pip install ampscz_anonymize_dicom

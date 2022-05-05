@@ -157,6 +157,7 @@ def anonymize_dicom():
                 new_file_loc = re.sub(str(dicom_root),
                         tmpdirname,
                         str(Path(roott) / file))
+                Path(new_file_loc).parent.mkdir(exist_ok=True, parents=True)
                 for var in vars:
                     if var == 'PatientName':
                         replace_val = name
