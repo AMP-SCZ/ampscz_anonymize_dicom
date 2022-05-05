@@ -149,46 +149,48 @@ def anonymize_dicom():
 
         progress['maximum'] = dicoms * 1.5
 
-        with tf.TemporaryDirectory() as tmpdirname:
-            k = 0
-            for roott, dirs, files in os.walk(dicom_root):
-                for file in files:
-                    f = pydicom.read_file(Path(roott) / file, force=True)
-                    new_file_loc = re.sub(str(dicom_root),
-                            tmpdirname,
-                            str(Path(roott) / file))
-                    for var in vars:
-                        if var == 'PatientName':
-                            replace_val = name
-                        elif var == 'PatientID':
-                            replace_val = session
-                        else:
-                            replace_val = 'deidentified'
-                        setattr(f, var, replace_val)
-                    f.save_as(new_file_loc)
-                    progress['value'] = k
-                    k += 1
-                    root.update_idletasks()
+        tmpdirname = tf.mkdtemp()
+        k = 0
+        for roott, dirs, files in os.walk(dicom_root):
+            for file in files:
+                f = pydicom.read_file(Path(roott) / file, force=True)
+                new_file_loc = re.sub(str(dicom_root),
+                        tmpdirname,
+                        str(Path(roott) / file))
+                for var in vars:
+                    if var == 'PatientName':
+                        replace_val = name
+                    elif var == 'PatientID':
+                        replace_val = session
+                    else:
+                        replace_val = 'deidentified'
+                    setattr(f, var, replace_val)
+                f.save_as(new_file_loc)
+                progress['value'] = k
+                k += 1
+                root.update_idletasks()
 
-            a = Label(root, text='**Zipping the file**')
-            a.grid(row=5, column=2, padx=50, pady=5)
-            date_row = f.AcquisitionDate
-            year = date_row[:4]
-            month = date_row[4:6]
-            day = date_row[6:]
-            out_zip_loc = Path(output_dir) / \
-                    f"{name}_MR_{year}_{month}_{day}_{session}"
+        a = Label(root, text='**Zipping the file**')
+        a.grid(row=5, column=2, padx=50, pady=5)
+        date_row = f.AcquisitionDate
+        year = date_row[:4]
+        month = date_row[4:6]
+        day = date_row[6:]
+        out_zip_loc = Path(output_dir) / \
+                f"{name}_MR_{year}_{month}_{day}_{session}"
 
-            t = Thread(target=shutil.make_archive,
-                       args=(out_zip_loc, 'zip', tmpdirname))
-            t.start()
-            while t.is_alive():
-                progress['value'] += 1
-                time.sleep(0.5)
+        t = Thread(target=shutil.make_archive,
+                   args=(out_zip_loc, 'zip', tmpdirname))
+        t.start()
+        while t.is_alive():
+            progress['value'] += 1
+            time.sleep(0.5)
 
-            t.join()
-            progress['value'] = dicoms * 1.5
-            a.destroy()
+        t.join()
+        progress['value'] = dicoms * 1.5
+        a.destroy()
+
+        shutil.rmtree(tmpdirname)
 
         messagebox.showinfo(
                 title='Done',
