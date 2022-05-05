@@ -7,22 +7,20 @@ Dependencies
 Installation
 How to run AMP-SCZ Dicom Anonymizer
 
+
 ## Introduction
 
 
 ## Dependencies
 
 #### Tested on osx
-
-- xquartz: https://www.xquartz.org
-- python 3
-- tk>=0.1.0
-- pydicom>=2.1.2
-- tkinterdnd2>=0.3.0
+- xquartz (https://www.xquartz.org)
+- `python` (3) with `pip` accessible in the shell
 
 
 
 ## Installation
+
 
 ```
 $ pip install ampscz_anonymize_dicom
