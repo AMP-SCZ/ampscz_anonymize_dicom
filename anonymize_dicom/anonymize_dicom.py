@@ -104,6 +104,7 @@ def anonymize_dicom():
                 'InstitutionalDepartmentName',
                 'InstitutionName',
                 'InstitutionAddress']
+
         fill_in_infor(dicom_root, name, session, vars)
         root.update_idletasks()
 
