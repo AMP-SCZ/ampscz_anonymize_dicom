@@ -21,7 +21,7 @@ setup(
     options={'py2app': OPTIONS},
     setup_requires=['py2app'],
     name="ampscz_anonymize_dicom",
-    version="0.0.6",
+    version="0.0.8",
     author="Kevin Cho",
     author_email="kevincho@bwh.harvard.edu",
     description="AMP-SCZ Dicom anonymizer",

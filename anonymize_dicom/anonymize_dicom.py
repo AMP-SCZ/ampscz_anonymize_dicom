@@ -99,6 +99,7 @@ def anonymize_dicom():
                 'PerformingPhysicianName',
                 'PatientName',
                 'PatientID',
+                'PatientBirthDate',
                 'PerformedProcedureStepDescription',
                 'InstitutionalDepartmentName',
                 'InstitutionName',
@@ -127,6 +128,8 @@ def anonymize_dicom():
                         replace_val = name
                     elif var == 'PatientID':
                         replace_val = session
+                    elif var == 'PatientBirthDate':
+                        replace_val = '19000101'
                     else:
                         replace_val = 'deidentified'
 
