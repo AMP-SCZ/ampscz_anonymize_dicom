@@ -85,7 +85,7 @@ def anonymize_dicom():
 
     def run_deidentification():
 
-        button['state'] = "disabled"
+        # button['state'] = "disabled"
         name = text.get()
         session = session_text.get()
         dicom_root = Path(listbox.get(0))  # get first item
@@ -169,6 +169,8 @@ def anonymize_dicom():
                         replace_val = name
                     elif var == 'PatientID':
                         replace_val = session
+                    elif var == 'PatientBirthDate':
+                        replace_val = '19000101'
                     else:
                         replace_val = 'deidentified'
                     setattr(f, var, replace_val)
@@ -204,7 +206,7 @@ def anonymize_dicom():
                 message='Please upload the zip file to the mediaflux\n'
                         f'{out_zip_loc}.zip')
 
-        button['state'] = "normal"
+        # button['state'] = "normal"
         return
 
 
