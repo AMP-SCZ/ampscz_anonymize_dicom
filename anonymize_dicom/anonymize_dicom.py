@@ -84,6 +84,8 @@ def anonymize_dicom():
         return dicom_root_check
 
     def run_deidentification():
+
+        button['state'] = "disabled"
         name = text.get()
         session = session_text.get()
         dicom_root = Path(listbox.get(0))  # get first item
@@ -92,7 +94,8 @@ def anonymize_dicom():
         name_check = check_name(name)
         dicom_root_check = check_dirs(dicom_root, output_dir)
 
-        vars = ['ReferringPhysicianName',
+        vars = ['AccessionNumber',
+                'ReferringPhysicianName',
                 'PerformingPhysicianName',
                 'PatientName',
                 'PatientID',
@@ -198,6 +201,7 @@ def anonymize_dicom():
                 message='Please upload the zip file to the mediaflux\n'
                         f'{out_zip_loc}.zip')
 
+        button['state'] = "normal"
         return
 
 
@@ -224,7 +228,7 @@ def anonymize_dicom():
     # Button(buttonbox, text='Run deidentification',
             # command=root.quit).pack(
                         # side=LEFT, padx=5)
-    Button(buttonbox, text='Run deidentification',
+    button = Button(buttonbox, text='Run deidentification',
             command=run_deidentification).pack(side=LEFT, padx=5)
 
 
@@ -275,7 +279,7 @@ def anonymize_dicom():
 
     def drop_enter(event):
         event.widget.focus_force()
-        print('Entering widget: %s' % event.widget)
+        # print('Entering widget: %s' % event.widget)
         #print_event_info(event)
         return event.action
 
@@ -285,14 +289,14 @@ def anonymize_dicom():
         return event.action
 
     def drop_leave(event):
-        print('Leaving %s' % event.widget)
+        # print('Leaving %s' % event.widget)
         #print_event_info(event)
         # print(text.pack())
         return event.action
 
     def drop(event):
         if event.data:
-            print('Dropped data:\n', event.data)
+            print('Root of dicom directory:\n', event.data)
             #print_event_info(event)
             if event.widget == listbox:
                 # event.data is a list of filenames as one string;
@@ -305,7 +309,7 @@ def anonymize_dicom():
                 files = listbox.tk.splitlist(event.data)
                 for f in files:
                     if os.path.exists(f):
-                        print('Dropped file: "%s"' % f)
+                        # print('Dropped file: "%s"' % f)
                         listbox.insert('end', f)
                     else:
                         print('Not dropping file "%s": file does not exist.' % f)
@@ -323,7 +327,7 @@ def anonymize_dicom():
 
     def drop_out(event):
         if event.data:
-            print('Dropped data:\n', event.data)
+            print('Output directory to save the zip file:\n', event.data)
             #print_event_info(event)
             if event.widget == outbox:
                 # event.data is a list of filenames as one string;
@@ -336,7 +340,7 @@ def anonymize_dicom():
                 files = outbox.tk.splitlist(event.data)
                 for f in files:
                     if os.path.exists(f):
-                        print('Dropped file: "%s"' % f)
+                        # print('Dropped file: "%s"' % f)
                         outbox.insert('end', f)
                     else:
                         print('Not dropping file "%s": file does not exist.' % f)
@@ -439,3 +443,5 @@ def anonymize_dicom():
     root.deiconify()
     root.mainloop()
 
+if __name__ == '__main__':
+    anonymize_dicom()
