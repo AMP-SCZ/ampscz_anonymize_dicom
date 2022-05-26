@@ -7,13 +7,15 @@ Usage:
 
 from setuptools import setup, find_packages
 from os.path import join
+from pathlib import Path
+
 
 APP = ['scripts/ampscz_anonymize_dicom']
 DATA_FILES = []
 OPTIONS = {}
 
-with open("/Users/kc244/ampscz_anonymize_dicom/README.md", "r") as fh:
-    long_description = fh.read()
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
 
 setup(
     app=APP,
@@ -21,7 +23,7 @@ setup(
     options={'py2app': OPTIONS},
     setup_requires=['py2app'],
     name="ampscz_anonymize_dicom",
-    version="0.0.8",
+    version="0.0.9",
     author="Kevin Cho",
     author_email="kevincho@bwh.harvard.edu",
     description="AMP-SCZ Dicom anonymizer",
