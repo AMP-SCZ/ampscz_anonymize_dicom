@@ -121,6 +121,7 @@ def anonymize_dicom():
 
     def fill_in_infor(dicom_root, name, session, vars):
         data_dict = {}
+        first_file = True
         for roott, dirs, files in os.walk(dicom_root):
             for file in files:
                 f = pydicom.read_file(Path(roott) / file, force=True)
@@ -128,7 +129,20 @@ def anonymize_dicom():
                     if var == 'PatientName':
                         replace_val = name
                     elif var == 'PatientID':
-                        replace_val = session
+                        if first_file:
+                            try:
+                                date_row = f.AcquisitionDate
+                            except:
+                                messagebox.showinfo(
+                                    title='Input Folder Error',
+                                    message='Please input the correct dicom directory')                                
+                                return
+
+                        year = date_row[:4]
+                        month = date_row[4:6]
+                        day = date_row[6:]
+                        replace_val = f"{name}_MR_{year}_{month}_{day}_{session}"
+                        first_file = False
                     elif var == 'PatientBirthDate':
                         replace_val = '19000101'
                     else:
@@ -158,6 +172,7 @@ def anonymize_dicom():
 
         tmpdirname = tf.mkdtemp()
         k = 0
+        first_file = True
         for roott, dirs, files in os.walk(dicom_root):
             for file in files:
                 f = pydicom.read_file(Path(roott) / file, force=True)
@@ -169,7 +184,19 @@ def anonymize_dicom():
                     if var == 'PatientName':
                         replace_val = name
                     elif var == 'PatientID':
-                        replace_val = session
+                        if first_file:
+                            try:
+                                date_row = f.AcquisitionDate
+                            except:
+                                messagebox.showinfo(
+                                    title='Input Folder Error',
+                                    message='Please input the correct dicom directory')                                
+                                return
+                        year = date_row[:4]
+                        month = date_row[4:6]
+                        day = date_row[6:]
+                        replace_val = f"{name}_MR_{year}_{month}_{day}_{session}"
+                        first_file = False
                     elif var == 'PatientBirthDate':
                         replace_val = '19000101'
                     else:
@@ -182,10 +209,6 @@ def anonymize_dicom():
 
         a = Label(root, text='**Zipping the file**')
         a.grid(row=5, column=2, padx=50, pady=5)
-        date_row = f.AcquisitionDate
-        year = date_row[:4]
-        month = date_row[4:6]
-        day = date_row[6:]
         out_zip_loc = Path(output_dir) / \
                 f"{name}_MR_{year}_{month}_{day}_{session}"
 
