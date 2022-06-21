@@ -112,6 +112,9 @@ def get_dicom_info(dicom_root: Path, name, session, output_dir, vars):
 if __name__ == '__main__':
     args = parse_args(sys.argv[1:])
 
+    args.input_dir = Path(args.input_dir)
+    args.output_dir = Path(args.output_dir)
+    
     # assert inputs
     assert check_name(args.id)
     assert check_dirs(args.input_dir, args.output_dir)
