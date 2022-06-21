@@ -73,8 +73,8 @@ def get_dicom_info(dicom_root: Path, name, session, output_dir, vars):
         for roott, dirs, files in os.walk(dicom_root):
             for file in files:
                 f = pydicom.read_file(Path(roott) / file, force=True)
-                new_file_loc = re.sub(str(dicom_root),
-                                      str(tmpdirname),
+                new_file_loc = re.sub(repr(str(dicom_root)),
+                                      repr(str(tmpdirname)),
                                       str(Path(roott) / file))
 
                 Path(new_file_loc).parent.mkdir(exist_ok=True, parents=True)
