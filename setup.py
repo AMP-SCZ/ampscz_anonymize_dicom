@@ -10,20 +10,12 @@ from os.path import join
 from pathlib import Path
 
 
-APP = ['scripts/ampscz_anonymize_dicom']
-DATA_FILES = []
-OPTIONS = {}
-
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
 setup(
-    app=APP,
-    data_files=DATA_FILES,
-    options={'py2app': OPTIONS},
-    setup_requires=['py2app'],
     name="ampscz_anonymize_dicom",
-    version="0.0.14",
+    version="0.0.15",
     author="Kevin Cho",
     author_email="kevincho@bwh.harvard.edu",
     description="AMP-SCZ Dicom anonymizer",
