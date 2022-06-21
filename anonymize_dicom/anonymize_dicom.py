@@ -176,9 +176,9 @@ def anonymize_dicom():
         for roott, dirs, files in os.walk(dicom_root):
             for file in files:
                 f = pydicom.read_file(Path(roott) / file, force=True)
-                new_file_loc = re.sub(repr(str(dicom_root)),
-                                      repr(tmpdirname),
-                                      str(Path(roott) / file))
+                full_path = Path(roott) / file
+                new_file_loc = Path(tmpdirname) / \
+                        f"{f.SeriesNumber}_{f.SeriesDescription}" / file
                 Path(new_file_loc).parent.mkdir(exist_ok=True, parents=True)
                 for var in vars:
                     if var == 'PatientName':

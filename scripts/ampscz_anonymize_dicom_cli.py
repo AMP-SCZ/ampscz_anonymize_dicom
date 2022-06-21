@@ -68,15 +68,13 @@ def get_dicom_info(dicom_root: Path, name, session, output_dir, vars):
 
     tmpdirname = tf.mkdtemp()
     with tf.TemporaryDirectory() as tmpdirname:
-        print(tmpdirname)
         first_file = True
         for roott, dirs, files in os.walk(dicom_root):
-            for file in files:
+            for file in [x for x in files if not x.startswith('.')]:
                 f = pydicom.read_file(Path(roott) / file, force=True)
-                new_file_loc = re.sub(repr(str(dicom_root)),
-                                      repr(str(tmpdirname)),
-                                      str(Path(roott) / file))
-
+                full_path = Path(roott) / file
+                new_file_loc = Path(tmpdirname) / \
+                        f"{f.SeriesNumber}_{f.SeriesDescription}" / file
                 Path(new_file_loc).parent.mkdir(exist_ok=True, parents=True)
                 for var in vars:
                     if var == 'PatientName':
