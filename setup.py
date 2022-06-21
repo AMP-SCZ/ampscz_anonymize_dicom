@@ -39,7 +39,8 @@ setup(
     install_requires=['tk>=0.1.0',
                       'pydicom>=2.1.2',
                       'tkinterdnd2>=0.3.0'],
-    scripts=['scripts/ampscz_anonymize_dicom']
+    scripts=['scripts/ampscz_anonymize_dicom',
+             'scripts/ampscz_anonymize_dicom_cli.py']
 )
 
 
